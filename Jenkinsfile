@@ -16,7 +16,7 @@ pipeline {
                     def dockerImage = 'salman1091/nginx-example'
                     def dockerTag = 'latest'
 
-                    docker.withRegistry('https://registry.hub.docker.com', 'docker-credentials-id') {
+                    docker.withRegistry('https://registry.hub.docker.com', 'dockerhub-credentials') {
                         def customImage = docker.build("${dockerImage}:${dockerTag}", '.')
                         customImage.push()
                     }
