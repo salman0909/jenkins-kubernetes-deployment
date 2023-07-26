@@ -1,6 +1,8 @@
 pipeline {
     agent any
-
+    environment {
+        dockerImageTag = "salman1091/my-web-app:${BUILD_TAG.toLowerCase()}"
+ }
     stages {
         stage('Checkout') {
             steps {
@@ -13,12 +15,17 @@ pipeline {
         stage('Build Docker Image') {
             steps {
                 script {
-                    def dockerImage = 'salman1091/nginx-example'
-                    def dockerTag = 'latest'
+                    sh "docker build -t $dockerImageTag ."
+                }
+            }
+        }
 
-                    docker.withRegistry('https://registry.hub.docker.com', 'dockerhub-credentials') {
-                        def customImage = docker.build("${dockerImage}:${dockerTag}", '.')
-                        customImage.push()
+        stage('Push Docker Image') {
+            steps {
+                script {
+                    withCredentials([usernamePassword(credentialsId: 'dockerhub-credentials', usernameVariable: 'DOCKER_USERNAME', passwordVariable: 'DOCKER_PASSWORD')]) {
+                        sh "docker login -u $DOCKER_USERNAME -p $DOCKER_PASSWORD"
+                        sh "docker push $dockerImageTag"
                     }
                 }
             }
