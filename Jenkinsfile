@@ -4,7 +4,10 @@ pipeline {
     stages {
         stage('Checkout') {
             steps {
-                git 'https://github.com/salman0909/https://github.com/salman0909/jenkins-kubernetes-deployment.git'
+                script {
+                    // Make sure to replace 'your-repo-url' with the URL of your Git repository
+                    checkout([$class: 'GitSCM', userRemoteConfigs: [[url: 'https://github.com/salman0909/my-web-app.git']]])
+                }
             }
         }
         stage('Build Docker Image') {
