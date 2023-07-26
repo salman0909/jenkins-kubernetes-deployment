@@ -8,7 +8,7 @@ pipeline {
             steps {
                 script {
                     // Make sure to replace 'your-repo-url' with the URL of your Git repository
-                    checkout([$class: 'GitSCM', userRemoteConfigs: [[url: 'https://github.com/salman0909/jenkins-kubernetes-deploymen.git']]])
+                    checkout([$class: 'GitSCM', userRemoteConfigs: [[url: 'https://github.com/salman0909/jenkins-kubernetes-deployment.git']]])
                 }
             }
         }
