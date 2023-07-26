@@ -2,7 +2,7 @@ pipeline {
     agent any
     environment {
         dockerImageTag = "salman1091/my-web-app:${BUILD_TAG.toLowerCase()}"
- }
+    }
     stages {
         stage('Checkout') {
             steps {
