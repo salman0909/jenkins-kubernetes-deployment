@@ -28,7 +28,7 @@ pipeline {
         stage('Deploy to Kubernetes') {
             steps {
                 sh 'curl -LO "https://storage.googleapis.com/kubernetes-release/release/v1.27.0-00/bin/linux/amd64/kubectl"'
-                sh "kubectl apply -f jenkins-kubernetes-deployment/nginx-deployment.yaml"
+                sh "/usr/local/bin/kubectl apply -f jenkins-kubernetes-deployment/nginx-deployment.yaml"
             }
         }
     }
