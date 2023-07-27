@@ -1,5 +1,16 @@
 pipeline {
     agent any
+    kubernetes {
+            // podTemplate with containers and volumes will be defined here
+            podTemplate {
+                containers {
+                    container(name: 'docker', image: 'docker:latest', ttyEnabled: true)
+                }
+                volumes {
+                    hostPathVolume(mountPath: '/var/run/docker.sock', hostPath: '/var/run/docker.sock', name: 'docker-socket')
+                }
+            }
+    }
     environment {
         dockerImageTag = "salman1091/nginx-example:${BUILD_TAG.toLowerCase()}"
     }
@@ -15,6 +26,7 @@ pipeline {
         stage('Build Docker Image') {
             steps {
                 script {
+                    sh "docker --version"
                     sh "docker build -t $dockerImageTag ."
                 }
             }
