@@ -1,8 +1,12 @@
 pipeline {
     agent any
+
     environment {
-        dockerImageTag = "salman1091/nginx-example:${BUILD_TAG.toLowerCase()}"
+        DOCKER_HUB_USERNAME = 'salman1091'
+        DOCKER_IMAGE_NAME = 'nginx-example'
+        DOCKER_IMAGE_TAG = 'latest'
     }
+
     stages {
         stage('Checkout') {
             steps {
@@ -14,27 +18,25 @@ pipeline {
         }
         stage('Build Docker Image') {
             steps {
-                script {
-                    sh "docker --version"
-                    sh "docker build -t $dockerImageTag ."
+                sh "docker build -t ${DOCKER_HUB_USERNAME}/${DOCKER_IMAGE_NAME}:${DOCKER_IMAGE_TAG} ."
+            }
+        }
+
+        stage('Push Docker Image to Docker Hub') {
+            steps {
+                withDockerRegistry(credentialsId: 'dockerhub-credentials', url: '') {
+                    sh "docker push ${DOCKER_HUB_USERNAME}/${DOCKER_IMAGE_NAME}:${DOCKER_IMAGE_TAG}"
                 }
             }
         }
 
-        stage('Push Docker Image') {
-            steps {
-                script {
-                    withCredentials([usernamePassword(credentialsId: 'dockerhub-credentials', usernameVariable: 'DOCKER_USERNAME', passwordVariable: 'DOCKER_PASSWORD')]) {
-                        sh "docker login -u $DOCKER_USERNAME -p $DOCKER_PASSWORD"
-                        sh "docker push $dockerImageTag"
-                    }
-                }
-            }
-        }
         stage('Deploy to Kubernetes') {
             steps {
+                
                 sh "kubectl apply -f jenkins-kubernetes-deployment/nginx-deployment.yaml"
             }
         }
     }
 }
+
+   
