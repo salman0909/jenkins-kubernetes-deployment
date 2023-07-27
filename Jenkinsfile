@@ -24,17 +24,12 @@ pipeline {
                 }
             }
         }
-        
-        stage('Deploy new image') {
-          steps {
-            container('kubectl') {
-              sh 'find'
-              sh 'kubectl version'
-              sh '#ls / -a'
-              sh 'kubectl apply -f jenkins-kubernetes-deployment/nginx-deployment.yaml'
-          }
+        stage('Deploy image into Kubernetes cluster') {
+            steps {
+                sh 'kubectl apply -f jenkins-kubernetes-deployment/nginx-deployment.yaml
+            }
         }
-      }
+        
     }
 }
 
